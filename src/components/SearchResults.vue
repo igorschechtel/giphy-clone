@@ -21,32 +21,42 @@
         dark
         x-large
         @click="loadMore"
-      >
-        Load more
-      </v-btn>
+      >Load more</v-btn>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'SearchResults',
+  name: "SearchResults",
 
   data: () => ({
     resultGifs: [],
     loading: false,
   }),
 
-  props: ['query'],
+  props: ["query"],
+
+  created: function () {
+    this.loading = true;
+    axios
+      .get("https://api.giphy.com/v1/gifs/search", {
+        params: { api_key: "n3Gbo6ADDbBVDNmyjP87XiGXAoLcGf3s", q: this.query },
+      })
+      .then((response) => {
+        this.resultGifs = response.data.data;
+        this.loading = false;
+      });
+  },
 
   watch: {
-    query: function(query) {
+    query: function (query) {
       this.loading = true;
       axios
-        .get('https://api.giphy.com/v1/gifs/search', {
-          params: { api_key: 'n3Gbo6ADDbBVDNmyjP87XiGXAoLcGf3s', q: query },
+        .get("https://api.giphy.com/v1/gifs/search", {
+          params: { api_key: "n3Gbo6ADDbBVDNmyjP87XiGXAoLcGf3s", q: query },
         })
         .then((response) => {
           this.resultGifs = response.data.data;
@@ -59,11 +69,11 @@ export default {
     loadMore() {
       this.loading = true;
       axios
-        .get('https://api.giphy.com/v1/gifs/search', {
+        .get("https://api.giphy.com/v1/gifs/search", {
           params: {
-            api_key: 'n3Gbo6ADDbBVDNmyjP87XiGXAoLcGf3s',
+            api_key: "n3Gbo6ADDbBVDNmyjP87XiGXAoLcGf3s",
             q: this.query,
-            limit: '5',
+            limit: "5",
             offset: this.resultGifs.length,
           },
         })
